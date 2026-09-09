@@ -104,11 +104,4 @@ FRONTEND_URL=http://localhost:3000
 REACT_APP_API_URL=http://localhost:5000/api
 ```
 
----
-
-## ☁️ Deployment
-
-- **Frontend → Vercel.** Set `REACT_APP_API_URL` to the backend's public URL.
-- **Backend → a persistent host** (Render, Railway, Fly.io). It's a long-running
-  Express server with WebSockets and scheduled jobs, so it can't run on Vercel's
-  serverless model. Set `DATABASE_URL`, `JWT_SECRET`, and `FRONTEND_URL`.
+> `.env` files stay local and gitignored — never commit real credentials.
