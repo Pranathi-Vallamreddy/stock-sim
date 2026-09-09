@@ -1,0 +1,178 @@
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/README.md b/README.md[m
+[1mindex ec8dc07..cb703af 100644[m
+[1m--- a/README.md[m
+[1m+++ b/README.md[m
+[36m@@ -4,56 +4,25 @@[m [mA full-stack **paper-trading** web app: practice buying and selling stocks with[m
+ virtual money, track a live portfolio with real-time profit/loss, and watch[m
+ prices move — all with **zero real-money risk**.[m
+ [m
+[31m-Built as a full-stack project covering a React frontend, a Node.js/Express API,[m
+[31m-a PostgreSQL database, and WebSocket-based live updates.[m
+[32m+[m[32mBuilt as a full-stack project covering a React frontend, a Node.js/Express REST[m
+[32m+[m[32mAPI, a PostgreSQL database, and WebSocket-based live price updates.[m
+ [m
+ ---[m
+ [m
+ ## ✨ Features[m
+ [m
+[31m-### 💰 Paper Trading[m
+[31m-- Buy and sell stocks with a starting virtual balance of ₹100,000.[m
+[31m-- Balance checks on every buy; positions open and close against the latest price.[m
+[31m-- Realized and unrealized **P&L** calculated per trade and across the portfolio.[m
+[31m-[m
+[31m-### 📊 Live Simulated Market[m
+[31m-- Seeded universe of ~50 Indian stocks (symbol, sector, starting price).[m
+[31m-- A background **price-simulation service** nudges prices up/down every few[m
+[31m-  seconds and pushes the changes to the browser over WebSockets, so the market[m
+[31m-  feels live. These live prices are the single source of truth for quotes,[m
+[31m-  trade execution, and P&L.[m
+[31m-- A Yahoo Finance endpoint is also available on the backend for pulling real[m
+[31m-  historical candles when needed.[m
+[31m-[m
+[31m-### ⭐ Watchlist & Dashboard[m
+[31m-- Track the stocks you care about and see them, plus the day's market movers, on[m
+[31m-  one dashboard.[m
+[31m-[m
+[31m-### 🛡️ Anomaly Detection (background job)[m
+[31m-- A scheduled job scans trading activity every 5 minutes and flags accounts that[m
+[31m-  look statistically unusual.[m
+[31m-- Core idea: compute each user's total P&L, then flag anyone whose P&L is a[m
+[31m-  **statistical outlier** — a **Z-score above 2.5** versus the population mean.[m
+[31m-  Extra rules catch abnormally high win rates, burst trading, and repeated[m
+[31m-  identical orders (bot-like behavior).[m
+[31m-- Flagged accounts appear on an **admin-only dashboard** with their risk score[m
+[31m-  and the reasons they were flagged.[m
+[31m-[m
+[31m-### 🔐 Authentication[m
+[31m-- Email/password signup and login with **JWT** tokens and **bcrypt** password[m
+[31m-  hashing. Role-based access separates regular users from admins.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 📸 Screenshots[m
+[31m-[m
+[31m-**Sign up**[m
+[31m-[m
+[31m-![Signup Page](./images/Screenshot%202026-04-24%20154607.png)[m
+[31m-[m
+[31m-**Order placed**[m
+[31m-[m
+[31m-![Order Success](./images/Screenshot%202026-04-24%20154858.png)[m
+[32m+[m[32m- **Paper trading** — buy/sell stocks from a ₹1,00,000 virtual balance, with[m
+[32m+[m[32m  balance checks and realized + unrealized **P&L** per position and account-wide.[m
+[32m+[m[32m- **Live market simulation** — a background service moves prices every few[m
+[32m+[m[32m  seconds and pushes updates to the browser over WebSockets. These live prices[m
+[32m+[m[32m  are the single source of truth for quotes, trade execution, and P&L.[m
+[32m+[m[32m- **Watchlist & dashboard** — track chosen stocks and see them, plus the day's[m
+[32m+[m[32m  market movers and your net return, on one dashboard.[m
+[32m+[m[32m- **Statistical anomaly detection** — a scheduled job flags accounts whose P&L[m
+[32m+[m[32m  is a statistical outlier (**Z-score > 2.5**), with an admin-only dashboard of[m
+[32m+[m[32m  flagged accounts, risk scores, and reasons.[m
+[32m+[m[32m- **Auth & roles** — email/password auth with **JWT** and **bcrypt**, plus[m
+[32m+[m[32m  user/admin role separation.[m
+ [m
+ ---[m
+ [m
+[36m@@ -64,57 +33,64 @@[m [ma PostgreSQL database, and WebSocket-based live updates.[m
+ | **Frontend** | React, React Router, TailwindCSS, Recharts, Lucide Icons |[m
+ | **Backend** | Node.js, Express, Socket.io |[m
+ | **Database** | PostgreSQL |[m
+[31m-| **Market data** | Yahoo Finance API |[m
+ | **Auth** | JWT, bcrypt |[m
+ [m
+ ---[m
+ [m
+[32m+[m[32m## 📸 Screenshots[m
+[32m+[m
+[32m+[m[32m**Dashboard** — watchlist, market movers, and portfolio summary[m
+[32m+[m[32m![Dashboard](./images/dashboard.png)[m
+[32m+[m
+[32m+[m[32m**Markets** — browse and search the stock universe[m
+[32m+[m[32m![Markets](./images/markets.png)[m
+[32m+[m
+[32m+[m[32m**Portfolio** — open positions with live P&L and trade history[m
+[32m+[m[32m![Portfolio](./images/portfolio.png)[m
+[32m+[m
+[32m+[m[32m**Order confirmation**[m
+[32m+[m[32m![Order placed](./images/order-success.png)[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+ ## 🏗️ Architecture[m
+ [m
+ ```[m
+ React (frontend)[m
+[31m-   │  REST API  ──────────────►  Node.js / Express  ──►  PostgreSQL[m
+[32m+[m[32m   │  REST API   ─────────────►  Node.js / Express  ──►  PostgreSQL[m
+    │  WebSockets ◄────────────►  Socket.io server[m
+                                      │[m
+[31m-                                     ├─ Price Simulation service (live price ticks)[m
+[31m-                                     └─ Anomaly Detection job (flags outlier accounts)[m
+[32m+[m[32m                                     ├─ Price simulation service (live price ticks)[m
+[32m+[m[32m                                     └─ Anomaly detection job (flags outlier accounts)[m
+ ```[m
+ [m
+[31m-The two background services (price simulation + anomaly detection) run on timers[m
+[31m-inside the backend process and are started in `server.js`.[m
+[32m+[m[32mBoth background services run on timers inside the backend process (started in[m
+[32m+[m[32m`server.js`).[m
+ [m
+ ---[m
+ [m
+[31m-## 🚀 Setup[m
+[32m+[m[32m## 🚀 Run Locally[m
+ [m
+[31m-The backend connects to a PostgreSQL database via a single `DATABASE_URL`[m
+[31m-connection string (works with hosted Postgres like Supabase/Neon, or a local[m
+[31m-instance).[m
+[31m-[m
+[31m-### 1. Database[m
+[31m-Point `psql` at your database and load the schema:[m
+[31m-```bash[m
+[31m-psql "$DATABASE_URL" -f backend/database_setup.sql[m
+[31m-```[m
+[32m+[m[32mThe backend connects to PostgreSQL via a single `DATABASE_URL` (works with[m
+[32m+[m[32mhosted Postgres like Supabase/Neon, or a local instance).[m
+ [m
+[31m-### 2. Backend[m
+[32m+[m[32m**1. Backend**[m
+ ```bash[m
+ cd backend[m
+ npm install[m
+[31m-npm start          # runs on http://localhost:5000[m
+[32m+[m[32m# create backend/.env (see below), then:[m
+[32m+[m[32mnode setup_db.js        # creates tables + seeds ~50 stocks[m
+[32m+[m[32mnode create_admin.js    # optional: creates an admin (reads ADMIN_EMAIL/ADMIN_PASSWORD)[m
+[32m+[m[32mnpm start               # http://localhost:5000[m
+ ```[m
+ [m
+[31m-### 3. Frontend[m
+[32m+[m[32m**2. Frontend**[m
+ ```bash[m
+ cd frontend[m
+ npm install[m
+[31m-npm start          # runs on http://localhost:3000[m
+[32m+[m[32mnpm start               # http://localhost:3000[m
+ ```[m
+ [m
+[31m----[m
+[31m-[m
+[31m-## 🔑 Environment Variables[m
+[31m-[m
+ **`backend/.env`**[m
+ ```env[m
+ DATABASE_URL=postgresql://user:password@host:5432/stock_simulator[m
+[36m@@ -123,13 +99,16 @@[m [mPORT=5000[m
+ FRONTEND_URL=http://localhost:3000[m
+ ```[m
+ [m
+[31m-**`frontend/.env`** (point the app at the backend)[m
+[32m+[m[32m**`frontend/.env`** (only needed if the API isn't on localhost:5000)[m
+ ```env[m
+ REACT_APP_API_URL=http://localhost:5000/api[m
+ ```[m
+ [m
+[31m-> ⚠️ **Deployment note:** The React frontend deploys to Vercel, but the[m
+[31m-> **backend does not** — it's a long-running Express server with WebSockets and[m
+[31m-> sche
